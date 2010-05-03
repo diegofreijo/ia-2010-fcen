@@ -1,0 +1,13 @@
+8 puzzle
+
+
+BreadthFirstSearch
+[ E N O N E E S O O N E S ]
+maxQueueSize: 184382
+queueSize: 184381
+nodesExpanded: 96873
+
+DepthFirstSearch
+maxQueueSize: 571081
+queueSize: 571080
+nodesExpanded: 311644
