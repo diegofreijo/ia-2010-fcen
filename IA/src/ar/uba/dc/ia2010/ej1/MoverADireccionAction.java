@@ -3,7 +3,7 @@ package ar.uba.dc.ia2010.ej1;
 import aima.core.agent.Action;
 
 public class MoverADireccionAction implements Action {
-	
+
 	private Directions direccion;
 
 	public MoverADireccionAction(Directions direccion) {
@@ -18,9 +18,11 @@ public class MoverADireccionAction implements Action {
 	public boolean isNoOp() {
 		return false;
 	}
-	
+
 	public String toString() {
-		return "Mover direccion " + direccion.name();
+		//return "Mover direccion " + direccion.name();
+		return  direccion.name().substring(0, 1);
+
 	}
 
 }
