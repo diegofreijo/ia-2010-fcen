@@ -7,18 +7,12 @@ public class GoalTestImpl implements GoalTest {
 	@Override
 	public boolean isGoalState(Object state) {
 		try  {
-			int[] finalState = {1,2,3,8,0,4,7,6,5}; 
-			int[] s =(int[])state;
-			
-			if (s.length != finalState.length)
-				return false;
-			
-			for (int i = 0; i < finalState.length; i++) 
-				if (finalState[i]!=s[i])
-					return false;	
-							
-			return true;
-			
+			int[] array = {1,2,3,8,0,4,7,6,5};
+			State finalState = new State(array);
+			State s =(State)state;
+
+			return s.equals(finalState);
+
 		} catch (Exception e) {
 			return false;
 		}
