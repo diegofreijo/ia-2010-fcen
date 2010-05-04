@@ -7,14 +7,14 @@ public class ResultFunctionImpl implements ResultFunction {
 
 	@Override
 	public Object result(Object s, Action a) {
-		
-		int[] state = (int[])s;
-		int[] newState = new int[state.length];
+
+		State state = (State)s;
+		int[] newState = new int[state.getArray().length];
 		for (int i = 0; i < newState.length; i++) {
-			newState[i] = state[i];
+			newState[i] = state.getArray()[i];
 		}
 		MoverADireccionAction accion = (MoverADireccionAction)a;
-		int zeroPos = Utils.zeroPosition(state);
+		int zeroPos = Utils.zeroPosition(state.getArray());
 		int aMover;
 		switch (accion.getDireccion()) {
 			case Norte:
@@ -36,10 +36,10 @@ public class ResultFunctionImpl implements ResultFunction {
 				aMover = newState[zeroPos-1];
 				newState[zeroPos-1] = 0;
 				newState[zeroPos] = aMover;
-				break;		
+				break;
 		}
-		
-		return newState;
+
+		return new State(newState);
 	}
 
 }

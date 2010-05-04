@@ -25,4 +25,12 @@ public class MoverADireccionAction implements Action {
 
 	}
 
+	public boolean equals(Object a) {
+		if (!a.getClass().equals(MoverADireccionAction.class))
+			return false;
+		MoverADireccionAction mover = (MoverADireccionAction)a;
+		return this.getDireccion().equals(mover.getDireccion());
+
+	}
+
 }
