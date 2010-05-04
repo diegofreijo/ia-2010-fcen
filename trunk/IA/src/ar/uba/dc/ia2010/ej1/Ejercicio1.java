@@ -8,6 +8,7 @@ import aima.core.agent.Action;
 import aima.core.environment.eightpuzzle.EightPuzzleBoard;
 import aima.core.environment.eightpuzzle.EightPuzzleFunctionFactory;
 import aima.core.environment.eightpuzzle.EightPuzzleGoalTest;
+import aima.core.environment.eightpuzzle.MisplacedTilleHeuristicFunction;
 import aima.core.search.framework.ActionsFunction;
 import aima.core.search.framework.EvaluationFunction;
 import aima.core.search.framework.GoalTest;
@@ -17,6 +18,7 @@ import aima.core.search.framework.Metrics;
 import aima.core.search.framework.Node;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.QueueSearch;
+import aima.core.search.framework.StepCostFunction;
 import aima.core.search.framework.TreeSearch;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.BestFirstSearch;
@@ -64,12 +66,24 @@ public class Ejercicio1 {
 		//EightPuzzleBoard board = new EightPuzzleBoard(initialState);
 
 
-		Problem p = new Problem(istate, new ActionsFunctionImpl(), new ResultFunctionImpl(), new GoalTestImpl());
+		Problem p = new Problem(istate, new ActionsFunctionImpl(), new ResultFunctionImpl(), new GoalTestImpl(),
+				new StepCostFunction() {
+
+			@Override
+			public double c(Object s, Action a, Object sPrime) {
+				return 1;
+			}});
 //		Problem p = new Problem(
 //				new EightPuzzleBoard(initialState),
 //				EightPuzzleFunctionFactory.getActionsFunction(),
 //				EightPuzzleFunctionFactory.getResultFunction(),
-//				new EightPuzzleGoalTest());
+//				new EightPuzzleGoalTest(),
+//				new StepCostFunction() {
+//
+//					@Override
+//					public double c(Object s, Action a, Object sPrime) {
+//						return 1;
+//					}});
 
 //		BreadthFirstSearch bfs = new BreadthFirstSearch();
 //		List<Action> list = bfs.search(p);
@@ -87,7 +101,7 @@ public class Ejercicio1 {
 //		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
 
 		//QueueSearch qs = new GraphSearch();
-		DepthLimitedSearch dfs = new DepthLimitedSearch(13);
+		DepthLimitedSearch dfs = new DepthLimitedSearch(20);
 
 		List<Action>  list = dfs.search(p);
 		Metrics metricas = dfs.getMetrics();
@@ -115,6 +129,10 @@ public class Ejercicio1 {
 //				return cant;
 //		}});
 
+		//GreedyBestFirstSearch bfs = new GreedyBestFirstSearch(new TreeSearch(), new MisplacedTilleHeuristicFunction());
+
+		
+		
 //		AStarSearch bfs = new AStarSearch(new GraphSearch(), new HeuristicFunction(){
 //
 //			@Override
@@ -128,18 +146,20 @@ public class Ejercicio1 {
 //				return cant;
 //		}});
 //
-//
+
 //		try {
 //			List<Action> list = null;
 //			list = bfs.search(p);
 //
 //			Metrics metricas = bfs.getMetrics();
-//			System.out.println("BestFirstSearch");
+//			System.out.println("GreedyBestFirstSearch");
 //			System.out.print("[ ");
 //			for (Action action : list) {
 //				System.out.print(action + " ");
 //			}
 //			System.out.println("]");
+//			//System.out.println("PathCost: " + bfs.getPathCost());
+//			
 //			System.out.println("maxQueueSize: " + metricas.get("maxQueueSize"));
 //			System.out.println("queueSize: " + metricas.get("queueSize"));
 //			System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
