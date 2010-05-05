@@ -34,9 +34,9 @@ public class Main
 	{
 		try
 		{
-			ResolverHillClimbing(new HillClimbing1());
+//			ResolverHillClimbing(new HillClimbing1());
 //			ResolverAEstrella(new AEstrella1());			
-//			ResolverAEstrella(new AEstrella2());
+			ResolverAEstrella(new AEstrella2());
 		}
 		catch (Exception e)
 		{
@@ -55,7 +55,7 @@ public class Main
 	{
 		Dado.EstablecerInstancia(new DadoPredefinido());
 		
-		Search busqueda = new AStarSearch(new TreeSearch(), h);
+		Search busqueda = new AStarSearch(new GraphSearch(), h);
 		Resolver(busqueda);
 	}
 	private static void ResolverHillClimbing(HeuristicFunction h) throws Exception
@@ -65,7 +65,7 @@ public class Main
 		for(int i = 0; i < 1000; ++i)
 		{
 			Dado.EstablecerInstancia(new DadoConSemilla(i));
-			resultados.add(Resolver(busqueda));
+			resultados.add(ResolverHillClimbing(busqueda));
 		}
 		
 		System.out.println(resultados.toString());
@@ -89,9 +89,28 @@ public class Main
 	}
 	
 	
-	private static Properties Resolver(Search busqueda) throws Exception
+	private static Properties ResolverHillClimbing(Search busqueda) throws Exception
 	{
-		//System.out.println("Jugando... ");
+		// Defino el problema y dejo q la libreria lo resuelva
+		Problem problema = new Problem
+		(
+			new BackgammonBoard(),
+			BackgammonFunctionFactory.getActionsFunction(),
+			BackgammonFunctionFactory.getResultFunction(),
+			new BackgammonGoalTest()
+		);
+		SearchAgent agente = new SearchAgent(problema, busqueda);
+		
+		
+		// Devuelvo resultados
+		Properties ret = agente.getInstrumentation();
+		ret.setProperty("costo", String.valueOf(agente.getActions().size()));
+		return ret;
+	}
+	
+	private static void Resolver(Search busqueda) throws Exception
+	{
+		System.out.println("Jugando... ");
 		long startTime = Calendar.getInstance().getTimeInMillis();
 		
 		// Defino el problema y dejo q la libreria lo resuelva
@@ -109,15 +128,13 @@ public class Main
 		Calendar cal = Calendar.getInstance();
 		long elapsed = cal.getTimeInMillis() - startTime;
 		cal.setTimeInMillis(elapsed);
-		//System.out.println("Listo! Tarde " + dateFormat.format(cal.getTime()));
+		System.out.println("Listo! Tarde " + dateFormat.format(cal.getTime()));
 		
 		// Imprimo resultados
-		//printActions(agente.getActions());
-		//printInstrumentation(agente.getInstrumentation());
-		Properties ret = agente.getInstrumentation();
-		ret.setProperty("costo", String.valueOf(agente.getActions().size()));
-		return ret;
+		printActions(agente.getActions());
+		printInstrumentation(agente.getInstrumentation());
 	}
+	
 	
 	private static void printActions(List<Action> actions)
 	{
