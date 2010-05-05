@@ -1,32 +1,23 @@
 package ar.uba.dc.ia2010.ej1;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import aima.core.agent.Action;
 import aima.core.environment.eightpuzzle.EightPuzzleBoard;
 import aima.core.environment.eightpuzzle.EightPuzzleFunctionFactory;
 import aima.core.environment.eightpuzzle.EightPuzzleGoalTest;
+import aima.core.environment.eightpuzzle.ManhattanHeuristicFunction;
 import aima.core.environment.eightpuzzle.MisplacedTilleHeuristicFunction;
-import aima.core.search.framework.ActionsFunction;
-import aima.core.search.framework.EvaluationFunction;
-import aima.core.search.framework.GoalTest;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.HeuristicFunction;
 import aima.core.search.framework.Metrics;
-import aima.core.search.framework.Node;
 import aima.core.search.framework.Problem;
-import aima.core.search.framework.QueueSearch;
-import aima.core.search.framework.StepCostFunction;
-import aima.core.search.framework.TreeSearch;
 import aima.core.search.informed.AStarSearch;
-import aima.core.search.informed.BestFirstSearch;
-import aima.core.search.informed.GreedyBestFirstEvaluationFunction;
 import aima.core.search.informed.GreedyBestFirstSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
 import aima.core.search.uninformed.DepthFirstSearch;
 import aima.core.search.uninformed.DepthLimitedSearch;
+import aima.core.search.uninformed.IterativeDeepeningSearch;
 
 public class Ejercicio1 {
 
@@ -66,107 +57,195 @@ public class Ejercicio1 {
 		//EightPuzzleBoard board = new EightPuzzleBoard(initialState);
 
 
-		Problem p = new Problem(istate, new ActionsFunctionImpl(), new ResultFunctionImpl(), new GoalTestImpl(),
-				new StepCostFunction() {
+//		Problem p = new Problem(istate, new ActionsFunctionImpl(), new ResultFunctionImpl(), new GoalTestImpl());
 
-			@Override
-			public double c(Object s, Action a, Object sPrime) {
-				return 1;
-			}});
-//		Problem p = new Problem(
-//				new EightPuzzleBoard(initialState),
-//				EightPuzzleFunctionFactory.getActionsFunction(),
-//				EightPuzzleFunctionFactory.getResultFunction(),
-//				new EightPuzzleGoalTest(),
-//				new StepCostFunction() {
-//
-//					@Override
-//					public double c(Object s, Action a, Object sPrime) {
-//						return 1;
-//					}});
+		EightPuzzleGoalTest goal = new EightPuzzleGoalTest() {
+			public boolean isGoalState(Object state) {
+				int[] finals = {1,2,3,8,0,4,7,6,5};
+				EightPuzzleBoard board = (EightPuzzleBoard) state;
+				return board.equals(new EightPuzzleBoard(finals));
+			}
+		};
 
-//		BreadthFirstSearch bfs = new BreadthFirstSearch();
-//		List<Action> list = bfs.search(p);
-//
-//		System.out.println("BreadthFirstSearch");
-//
-//		Metrics metricas = bfs.getMetrics();
-//		System.out.print("[ ");
-//		for (Action action : list) {
-//			System.out.print(action + " ");
-//		}
-//		System.out.println("]");
-//		System.out.println("maxQueueSize: " + metricas.get("maxQueueSize"));
-//		System.out.println("queueSize: " + metricas.get("queueSize"));
-//		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+		Problem p = new Problem(
+				new EightPuzzleBoard(initialState),
+				EightPuzzleFunctionFactory.getActionsFunction(),
+				EightPuzzleFunctionFactory.getResultFunction(),
+				goal);
 
-		//QueueSearch qs = new GraphSearch();
-		DepthLimitedSearch dfs = new DepthLimitedSearch(20);
+		BreadthFirstSearch bfs = new BreadthFirstSearch();
+		List<Action> list = bfs.search(p);
 
-		List<Action>  list = dfs.search(p);
-		Metrics metricas = dfs.getMetrics();
+		System.out.println("BreadthFirstSearch");
 
-		System.out.println("DepthFirstSearch");
+		Metrics metricas = bfs.getMetrics();
 		System.out.print("[ ");
 		for (Action action : list) {
 			System.out.print(action + " ");
 		}
 		System.out.println("]");
-		System.out.println("maxQueueSize: " + metricas.get("maxQueueSize"));
-		System.out.println("queueSize: " + metricas.get("queueSize"));
 		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
 
-//		GreedyBestFirstSearch bfs = new GreedyBestFirstSearch(new GraphSearch(), new HeuristicFunction(){
-//
-//			@Override
-//			public double h(Object state) {
-//				int[] array = {1,2,3,8,0,4,7,6,5};
-//				State s =(State)state;
-//				int cant=0;
-//				for (int i = 0; i < array.length; i++)
-//					if (array[i] == s.getArray()[i])
-//						cant++;
-//				return cant;
-//		}});
+		DepthFirstSearch dfs = new DepthFirstSearch(new GraphSearch());
 
-		//GreedyBestFirstSearch bfs = new GreedyBestFirstSearch(new TreeSearch(), new MisplacedTilleHeuristicFunction());
+		list = dfs.search(p);
+		metricas = dfs.getMetrics();
 
-		
-		
-//		AStarSearch bfs = new AStarSearch(new GraphSearch(), new HeuristicFunction(){
-//
-//			@Override
-//			public double h(Object state) {
-//				int[] array = {1,2,3,8,0,4,7,6,5};
-//				State s =(State)state;
-//				int cant=0;
-//				for (int i = 0; i < array.length; i++)
-//					if (array[i] == s.getArray()[i])
-//						cant++;
-//				return cant;
-//		}});
-//
+		System.out.println("DepthFirstSearch");
+		System.out.println("solutionLenght: " + list.size());
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
 
-//		try {
-//			List<Action> list = null;
-//			list = bfs.search(p);
-//
-//			Metrics metricas = bfs.getMetrics();
-//			System.out.println("GreedyBestFirstSearch");
-//			System.out.print("[ ");
-//			for (Action action : list) {
-//				System.out.print(action + " ");
-//			}
-//			System.out.println("]");
-//			//System.out.println("PathCost: " + bfs.getPathCost());
-//			
-//			System.out.println("maxQueueSize: " + metricas.get("maxQueueSize"));
-//			System.out.println("queueSize: " + metricas.get("queueSize"));
-//			System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		DepthLimitedSearch dls = new DepthLimitedSearch(20);
+
+		list = dls.search(p);
+		metricas = dls.getMetrics();
+
+		System.out.println("DepthLimitedSearch");
+		System.out.print("[ ");
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		IterativeDeepeningSearch ids = new IterativeDeepeningSearch();
+
+		list = ids.search(p);
+		metricas = ids.getMetrics();
+
+		System.out.println("IterativeDeepeningSearch");
+		System.out.print("[ ");
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		GreedyBestFirstSearch greedy = new GreedyBestFirstSearch(
+				new GraphSearch(),
+				new HeuristicFunction() {
+
+					@Override
+					public double h(Object state) {
+						return 0;
+					}
+
+				}
+		);
+
+		list = greedy.search(p);
+		metricas = greedy.getMetrics();
+		System.out.println("GreedyBestFirstSearch - H1");
+		System.out.println("solutionLenght: " + list.size());
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		GreedyBestFirstSearch greedy1 = new GreedyBestFirstSearch(
+				new GraphSearch(),
+				new MisplacedTilleHeuristicFunction()
+		);
+
+		list = greedy1.search(p);
+		metricas = greedy1.getMetrics();
+		System.out.println("GreedyBestFirstSearch - H2");
+		System.out.println("solutionLenght: " + list.size());
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		GreedyBestFirstSearch greedy2 = new GreedyBestFirstSearch(
+				new GraphSearch(),
+				new ManhattanHeuristicFunction()
+		);
+
+		list = greedy2.search(p);
+		metricas = greedy2.getMetrics();
+		System.out.println("GreedyBestFirstSearch - H3");
+		System.out.println("solutionLenght: " + list.size());
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		GreedyBestFirstSearch greedy3 = new GreedyBestFirstSearch(
+				new GraphSearch(),
+				new ManhattanHeuristicFunction()
+		);
+
+		list = greedy3.search(p);
+		metricas = greedy3.getMetrics();
+		System.out.println("GreedyBestFirstSearch - H4");
+		System.out.println("solutionLenght: " + list.size());
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		AStarSearch ass = new AStarSearch(
+				new GraphSearch(),
+				new HeuristicFunction() {
+
+					@Override
+					public double h(Object state) {
+						return 0;
+					}
+
+				}
+				);
+
+		list = ass.search(p);
+
+		metricas = ass.getMetrics();
+		System.out.println("AStarSearch - H1");
+		System.out.print("[ ");
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		AStarSearch ass1 = new AStarSearch(
+				new GraphSearch(),
+				new MisplacedTilleHeuristicFunction()
+				);
+
+		list = ass1.search(p);
+
+		metricas = ass1.getMetrics();
+		System.out.println("AStarSearch - H2");
+		System.out.print("[ ");
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		AStarSearch ass2 = new AStarSearch(
+				new GraphSearch(),
+				new ManhattanHeuristicFunction()
+				);
+
+		list = ass2.search(p);
+
+		metricas = ass2.getMetrics();
+		System.out.println("AStarSearch - H3");
+		System.out.print("[ ");
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
+
+		AStarSearch ass3 = new AStarSearch(
+				new GraphSearch(),
+				new ManhattanHeuristicFunction()
+				);
+
+		list = ass3.search(p);
+
+		metricas = ass3.getMetrics();
+		System.out.println("AStarSearch - H4");
+		System.out.print("[ ");
+		for (Action action : list) {
+			System.out.print(action + " ");
+		}
+		System.out.println("]");
+		System.out.println("nodesExpanded: " + metricas.get("nodesExpanded"));
 	}
 
 }
