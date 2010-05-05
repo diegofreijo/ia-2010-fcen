@@ -1,5 +1,9 @@
 package tp1ej3;
 
+import java.util.List;
+
+import aima.core.util.datastructure.XYLocation;
+
 
 public class BackgammonBoard
 {	
@@ -119,6 +123,20 @@ public class BackgammonBoard
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int ret = 0;
+		for(int i = 0; i < tablero.length; ++i)
+		{
+			ret += i * FichasEnColumna(i);
+		}
+		
+		ret += numeroDeJugada;
+		
+		return ret;
 	}
 
 	public String toString()
